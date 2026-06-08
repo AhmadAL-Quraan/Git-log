@@ -345,5 +345,11 @@ It’s basically:
 
 “Take all changes from this branch and make them one commit.”
 
+## Git submodule 
 
-Test
+A submodule lets one repository include another repository at a specific commit.
+
+```
+git submodule add -f https://github.com/user/other-repo.git external/other-repo
+git commit -m "Add other-repo as submodule"
+```
