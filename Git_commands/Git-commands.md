@@ -1,8 +1,11 @@
 # Git Cheat Sheet (Organized)
 
 
-* [Git_bisect](git_bisect.md)
-* [Git submodule](#git-submodule)
+## Content
+* [Git_bisect](git_bisect.md): How to search for commits that made a bug.
+* [Git submodule](#git-submodule): Link a remote repo with current one.
+* [Merging approaches](merge_approaches.md): merge, rebase, squash, merge squash.
+
 
 
 ## 1. Check Current Branches
@@ -14,7 +17,7 @@ git branch
 
 ---
 
-# 2. Switching Branches
+## 2. Switching Branches
 
 ### Switch to an existing branch
 
@@ -46,7 +49,7 @@ git switch -c <branch-name>
 
 ---
 
-# 3. Stage Changes
+## 3. Stage Changes
 
 ### Add a specific file
 
@@ -62,7 +65,7 @@ git add .
 
 ---
 
-# 4. Commit Changes
+## 4. Commit Changes
 
 Save staged changes with a message:
 
@@ -72,7 +75,7 @@ git commit -m "Your commit message"
 
 ---
 
-# 5. Push Changes
+## 5. Push Changes
 
 ### Push to a specific branch
 
@@ -88,9 +91,9 @@ git push --set-upstream origin <branch-name>
 
 ---
 
-# 6. Remote Repository Management
+## 6. Remote Repository Management
 
-## Check the current remote URL
+### Check the current remote URL
 
 ```bash
 git remote -v
@@ -98,7 +101,7 @@ git remote -v
 
 ---
 
-## Change or set the remote repository URL
+### Change or set the remote repository URL
 
 ```bash
 git remote set-url origin git@github.com:ZeroNeroIV/Code-Search-Engine.git
@@ -112,7 +115,7 @@ git remote -v
 
 ---
 
-# 7. Remove a File from Git Tracking
+## 7. Remove a File from Git Tracking
 
 Stop tracking a file while keeping it locally:
 
@@ -126,9 +129,9 @@ Useful when:
 
 ---
 
-# 8. Git Configuration
+## 8. Git Configuration
 
-## Set your email globally
+### Set your email globally
 
 ```bash
 git config --global user.email "your-email@example.com"
@@ -136,9 +139,9 @@ git config --global user.email "your-email@example.com"
 
 ---
 
-# 9. Undo the Most Recent Commit
+## 9. Undo the Most Recent Commit
 
-## Keep file changes locally
+### Keep file changes locally
 
 ```bash
 git reset --soft HEAD~1
@@ -146,7 +149,7 @@ git reset --soft HEAD~1
 
 ---
 
-## Remove the commit and file changes completely
+### Remove the commit and file changes completely
 
 ```bash
 git reset --hard HEAD~1
@@ -156,7 +159,7 @@ git reset --hard HEAD~1
 
 ---
 
-# 10. View an Older Commit
+## 10. View an Older Commit
 
 Show detailed information about a commit:
 
@@ -166,9 +169,9 @@ git show <commit-id>
 
 ---
 
-# 11. Go Back to a Previous Commit
+## 11. Go Back to a Previous Commit
 
-## Case 1 — Temporarily View an Old Commit (Safe)
+### Case 1 — Temporarily View an Old Commit (Safe)
 
 ```bash
 git checkout <commit-hash>
@@ -180,7 +183,7 @@ git checkout <commit-hash>
 
 ---
 
-## Case 2 — Revert Changes While Keeping History (Recommended)
+### Case 2 — Revert Changes While Keeping History (Recommended)
 
 Creates a new commit that undoes changes:
 
@@ -192,7 +195,7 @@ Recommended if the commit was already pushed to GitHub.
 
 ---
 
-## Case 3 — Hard Reset to an Older Commit
+### Case 3 — Hard Reset to an Older Commit
 
 Completely removes newer commits and changes:
 
@@ -218,7 +221,7 @@ git reset --hard HEAD~2
 git rev-parse HEAD 
 ```
 
-## Content for any objects 
+## See Content for any objects 
 ```
 git cat-file <hash> 
 ```
@@ -227,15 +230,17 @@ git cat-file <hash>
 * `p`: print the content for the object.
 
 ## Recover yourself (log)
+### Git reflog
 ```
 git reflog show
 ```
 * Will show you all the logs and moves (hashes) you did in your repo (specifically what happened with HEAD), and you can use to recover from any mistake you did. 
 
+* You can use `git reset --hard <action-hash>`
 > You can use `git switch -C <branch>` to any branch including main points to HEAD, useful when deleting content and recovering.
 
-### What if you delete a file
-* `rm <file>.txt`
+### Git restore
+* `rm <file>.txt`: Delete a file, use git restore to retrieve it. 
 ```
 git restore .
 ```
@@ -245,110 +250,6 @@ git restore --source <hash_file> <file_name_deleted>
 ```
 
 
-## Merging approaches
-
-### Merge 
-```
-git switch main
-git fetch origin 
-git merge origin/main
-```
-* When the branches have diverged, Git creates a new merge commit that has both branches as parents.
-```
-Before: 
-
-A---B---C main
-     \
-      D---E feature
-
-After: 
-A---B---C--------M main
-     \          /
-      D---E---- feature
-```
-
-### Rebase 
-```
-git switch feature_branch
-git rebase <target branch(top of it)>
-git rebase main
-
-```
-* Advanced merge, instead of making a new commit, you take a whole commits of a branch (feature branch), and add them in-front of the main one, so the history of it will be linear. 
-* This is very useful if u want to make several features for a main branch without the main history being affected.
-
-```
-Before: 
-
-A---B---C main
-     \
-      D---E feature
-After: 
-A---B---C---D'---E' feature
-```
-### Squash 
-`git rebase -i`
-
-* An interactive window will appears after.
-
-| Command  | Meaning                             |
-| -------- | ----------------------------------- |
-| `pick`   | keep commit normally                |
-| `squash` | combine with previous commit        |
-| `fixup`  | combine and discard message         |
-| `reword` | keep commit but edit message        |
-| `drop`   | remove commit                       |
-| `edit`   | stop during rebase to modify commit |
-* squash combines multiple commits into a single commit.
-* It’s commonly used to clean up a feature branch before merging it into main.
-
-==> After editing another window will appear for commit message.
-```
-Suppose your feature branch has many small commits:
-A---B---C main
-         \
-          D---E---F feature
-Where:
-
-D = initial feature
-E = fix typo
-F = debugging changes
-
-You may not want all these commits in the main history.
-
-git checkout main
-git merge --squash feature
-git commit
-
-Result: 
-A---B---C---S main
-```
-
-
-| Operation | What happens                             |
-| --------- | ---------------------------------------- |
-| Merge     | Combines histories with a merge commit   |
-| Rebase    | Replays commits on top of another branch |
-| Squash    | Combines multiple commits into one       |
-
-
-
-### Squash merging 
-
-* Squash and merge into main directly.
-```
-git merge --squash feature
-git commit
-```
-
-Result: 
-```
-A---B---C---S
-```
-
-It’s basically:
-
-“Take all changes from this branch and make them one commit.”
 
 ## Git submodule 
 
