@@ -89,6 +89,10 @@ git push -u origin <branch-name>
 git push --set-upstream origin <branch-name>
 ```
 
+### Force push to remote branch with safety check 
+```
+git push --force-with-lease <remote-branch origin main> 
+```
 ---
 
 ## 6. Remote Repository Management
